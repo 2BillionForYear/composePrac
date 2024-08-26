@@ -4,6 +4,6 @@ services:
   todo-app:
     environment:
       NODE_ENV: development
-    ports:
-      - 35729:35729 # LiveReload를 위해 추가
-    command: npm run dev # 개발 모드에서는 'npm run dev'를 사용
+    volumes:
+      - ./app:/usr/src/app
+    command: sh -c "npm install nodemon && npm run dev"
