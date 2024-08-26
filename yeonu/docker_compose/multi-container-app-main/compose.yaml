@@ -1,12 +1,4 @@
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Docker compose reference guide at
-# https://docs.docker.com/compose/compose-file/
-
-# Here the instructions define your application as two services called "todo-app" and “todo-database”
-# The service “todo-app” is built from the Dockerfile in the /app directory,
-# and the service “todo-database” uses the official MongoDB image 
-# from Docker Hub - https://hub.docker.com/_/mongo. 
-# You can add other services your application may depend on here.
+version: '3.8'  # https://meetup.nhncloud.com/posts/277
 
 services:
   todo-app:
@@ -18,21 +10,17 @@ services:
       NODE_ENV: production
     ports:
       - 3000:3000
-      - 35729:35729
-    develop:
-      watch:
-        - path: ./app/package.json
-          action: rebuild
-        - path: ./app
-          target: /usr/src/app
-          action: sync
+    volumes:
+      - ./app:/usr/src/app # 호스트 디렉토리를 컨테이너와 동기화
+      - /usr/src/app/node_modules # 컨테이너에서 node_modules 디렉토리를 캐싱
+    command: npm start # 프로덕션 모드에서는 'npm start'를 사용
 
   todo-database:
     image: mongo:6
-    #volumes: 
-    #  - database:/data/db
+    volumes: 
+      - database:/data/db # volume 설정, 데이터 영구 저장
     ports:
       - 27017:27017
 
-#volumes:
-  #database:
+volumes:
+  database:
