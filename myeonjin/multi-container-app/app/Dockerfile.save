@@ -1,0 +1,81 @@
+# syntax=docker/dockerfile:1
+
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Dockerfile reference guide at
+# https://docs.docker.com/engine/reference/builder/
+
+#노드 버젼 표기, 19.5.0을 사용함.
+ARG NODE_VERSION=19.5.0
+
+#노드버전에 맞는 알파인 베이스 이미지 사용
+FROM node:${NODE_VERSION}-alpine
+
+# NODE_ENV 값은 두가지가 있음.
+# 하나는 production-파일캐싱, 에러메시지 하이딩을 지원, 하나는 development-파일캐싱방지, 디버그를위한 상세한 에러메세지
+ENV NODE_ENV production
+
+# 작업 디렉터리 설정 - 컨테이너 내 /sur/src/app로 성정한 것임
+WORKDIR /usr/src/app
+
+# Download dependencies as a separate step to take advantage of Docker's caching.
+# Leverage a cache mount to /root/.npm to speed up subsequent builds.
+# Leverage a bind mounts to package.json and package-lock.json to avoid having to copy them into
+# into this layer.
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=package-lock.json,target=package-lock.json \
+    --mount=type=cache,target=/root/.npm \
+    npm ci --include=dev
+
+ENV PATH=/home/node/.npm-global/bin:$PATH
+
+
+# install nodemon for hot-reloading
+#nodemon 설치 - 노드가 안 꺼짐
+
+RUN npm install -g nodemon
+
+# Copy the rest of the source files into the image.
+#복사
+COPY . .
+
+
+# Run the application as a non-root user.
+#app디렉터리 read권한을 node에게 부여 및 컨테이너 사용자를 node 지정
+RUN  chown -R node /usr/src/app
+USER node
+
+# Expose the port that the application listens on.
+# 3000번 포트 개방, 보통 서버 포트는 3000번임
+EXPOSE 3000
+
+# Run the application in dev mode to use with Compose watch feature
+#서버 실행, dev는 로그를 terminal에 명시적으로 표기해줌 to package.json and package-lock.json to avoid having to copy them into
+# into this layer.
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=package-lock.json,target=package-lock.json \
+    --mount=type=cache,target=/root/.npm \
+    npm ci --include=dev
+
+# install nodemon for hot-reloading
+#nodemon 설치 - 노드가 안 꺼짐
+RUN npm install -g nodemon
+
+# Copy the rest of the source files into the image.
+#복사
+COPY . .
+
+
+# Run the application as a non-root user.
+#app디렉터리 read권한을 node에게 부여 및 컨테이너 사용자를 node 지정
+RUN  chown -R node /usr/src/app
+USER node
+
+# Expose the port that the application listens on.
+# 000번 포트 개방, 보통 서버 포트는 3000번임
+EXPOSE 3000
+
+# Run the application in dev mode to use with Compose watch feature
+#서
+
+
+CMD npm run dev
