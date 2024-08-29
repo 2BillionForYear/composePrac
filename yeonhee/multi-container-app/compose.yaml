@@ -1,0 +1,22 @@
+services:
+  todo-app:
+    build:
+      context: ./app
+    depends_on:
+      - todo-database
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000
+      - 35729:35729
+    command: ["npm", "run", "dev"]
+
+  todo-database:
+    image: mongo:6
+    volumes: 
+      - database:/data/db # 데이터 지속성을 위한 볼륨 설정
+    ports:
+      - 27017:27017
+
+volumes:
+  database:
