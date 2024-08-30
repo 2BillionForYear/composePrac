@@ -26,6 +26,7 @@ services:
   todo-app:
     build:
       context: ./app
+      dockerfile: Dockerfile-main
     depends_on:
       - todo-database
     environment:
