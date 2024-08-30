@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  # 'todo-app' 서비스는 Node.js 애플리케이션을 실행하는 컨테이너를 정의
+  todo-app:
+    build:
+      context: ./test-app  # Dockerfile이 있는 디렉토리의 경로를 지정
+      dockerfile: Dockerfile  # 사용할 Dockerfile의 이름
+    depends_on:
+      - todo-database  # 'todo-database' 서비스가 먼저 시작된 후 'todo-app' 서비스가 시작됨
+    ports:
+      - "3000:3000"  # 호스트의 3000번 포트를 컨테이너의 3000번 포트에 연결
+
+   # 'todo-database' 서비스는 MongoDB 데이터베이스를 실행하는 컨테이너를 정의한다
+  todo-database:
+    image: mongo:6  # MongoDB 6 버전의 공식 이미지를 사용
+    ports:
+      - "27017:27017"  # 호스트의 27017번 포트를 컨테이너의 27017번 포트에 연결
