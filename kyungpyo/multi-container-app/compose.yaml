@@ -8,25 +8,10 @@
 # from Docker Hub - https://hub.docker.com/_/mongo. 
 # You can add other services your application may depend on here.
 
-# 현재 두개의 컨테이너 실행 - todo-app, todo-database(몽고디비)
-# todo-app
-#	./app 디렉터리의 Dockerfile을 사용하여 빌드
-#	depends_on -> 명시된 컨테이너를 실행 후 빌드및 실행, 즉 서버코드 내부엔 몽고디비 의존성이 존재함
-#	NODE_ENV: prodcution 명시
-#	서버포트 3000, 리로딩포트 35729 명시
-#	develop -> 해당 파일의 수정사항이 생기면 특정동작 수행
-#	pakage.json의 수정 -> 이미지 재빌드
-#	./app 자체의 수정 -> 컨테이너 /usr/src/app 수정, 즉 동기화
-#todo-database
-#	image-> 몽고디비 지정
-#	볼륨 -> 컨테이너 /data/db디렉터리에 마운트,
-#	포트번호 27017
-
 services:
   todo-app:
     build:
       context: ./app
-      dockerfile: Dockerfile-main
     depends_on:
       - todo-database
     environment:
