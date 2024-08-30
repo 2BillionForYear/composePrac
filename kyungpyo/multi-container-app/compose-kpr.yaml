@@ -1,0 +1,14 @@
+services:
+  todo-app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile-kpr
+    depends_on:
+      - todo-database
+    ports:
+      - 3000:3000
+
+  todo-database:
+    image: mongo:6
+    ports:
+      - 27017:27017
