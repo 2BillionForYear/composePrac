@@ -1,0 +1,26 @@
+version: '3.8'  # https://meetup.nhncloud.com/posts/277
+
+services:
+  todo-app:
+    build:
+      context: ./app
+    depends_on:
+      - todo-database
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000
+    volumes:
+      - ./app:/usr/src/app # 호스트 디렉토리를 컨테이너와 동기화
+      - /usr/src/app/node_modules # 컨테이너에서 node_modules 디렉토리를 캐싱
+    command: npm start # 프로덕션 모드에서는 'npm start'를 사용
+
+  todo-database:
+    image: mongo:6
+    volumes: 
+      - database:/data/db # volume 설정, 데이터 영구 저장
+    ports:
+      - 27017:27017
+
+volumes:
+  database:

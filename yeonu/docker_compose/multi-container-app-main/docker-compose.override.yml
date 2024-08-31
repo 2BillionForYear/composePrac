@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  todo-app:
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./app:/usr/src/app
+    command: sh -c "npm install nodemon && npm run dev"
